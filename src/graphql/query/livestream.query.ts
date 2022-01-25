@@ -1,0 +1,180 @@
+import {gql} from '@apollo/client';
+import {USER} from "./userAuth.query";
+import {PRODUCT} from "./products.query";
+
+export const LIVESTREAM = gql`
+    fragment LivestreamDetail on LiveStream{
+        id
+        title
+        streamer{
+            ...UserDetail
+        }
+        experience{
+            description
+            hashtags
+            id
+            image
+            name
+        }
+        categories{
+            hashtags
+            id
+            image
+            name
+            slug
+        }
+        city {
+            id
+            name
+            photo
+            region{
+                id
+                name
+            }
+            location{
+                latitude
+                longitude
+            }
+        }
+        preview{
+            id
+            path
+            url
+            thumbnail
+        }
+        previewVideo{
+            filename
+            id
+            path
+            status
+            thumbnail
+            url
+        }
+        channel{
+            id
+            status
+            type
+            token
+            participants{
+                joinedAt
+                leavedAt
+                user{
+                    ...UserDetail
+                }
+                isPublisher
+            }
+            startedAt
+            finishedAt
+            record{
+                sources{
+                    source
+                    id
+                }
+                enabled
+                status
+            }
+        }
+        isLiked
+        publicMessageThread{
+            id
+            messages{
+                author{
+                    ...UserDetail
+                }
+                createdAt
+                data
+                id
+                isRead
+                type
+                videoTime
+            }
+            participants{
+                ...UserDetail
+            }
+            tags
+            status{
+                hidden
+                muted
+            }
+            unreadMessages
+        }
+        privateMessageThreads{
+            id
+            messages{
+                author{
+                    ...UserDetail
+                }
+                createdAt
+                data
+                id
+                isRead
+                type
+                videoTime
+            }
+            participants{
+                ...UserDetail
+            }
+            tags
+            status{
+                hidden
+                muted
+            }
+            unreadMessages
+        }
+        views
+        likes
+        startTime
+        productDurations{
+            product{
+                ...ProductInfo
+            }
+            duration
+        }
+        orientation
+        thumbnail{
+            id
+            thumbnail
+            url
+        }
+        isFeatured
+        hashtags
+        slug
+    }
+    ${USER}
+    ${PRODUCT}
+`;
+
+export const GET_LIVESTREAMS = gql`
+    query livestreams($page:PageInput = {limit:12}){
+        liveStreams(filter:{statuses:[STREAMING,PENDING]},page:$page,sort:{feature:CREATED_AT,type:DESC}){
+            collection{
+                ...LivestreamDetail
+            }
+
+            pager{
+                total
+                limit
+                skip
+            }
+        }
+    }
+    ${LIVESTREAM}
+`;
+
+export const GET_PASTSTREAM = gql`
+query paststreams($page:PageInput = {limit:12}){
+    liveStreams(filter:{statuses:[FINISHED]},page:$page,sort:{feature:CREATED_AT,type:DESC}){
+        collection{
+            ...LivestreamDetail
+        }
+
+        pager{
+            total
+            limit
+            skip
+        }
+    }
+    ${LIVESTREAM}
+}
+`;
+

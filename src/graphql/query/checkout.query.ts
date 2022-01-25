@@ -1,0 +1,368 @@
+import {gql} from '@apollo/client';
+import {PRODUCT} from "./products.query";
+import {USER} from "./userAuth.query";
+
+export const CART_DETAIL = gql`
+    fragment CartDetail on Cart{
+        items{
+            id
+            quantity
+            seller{
+                id
+                name
+                organization {
+                    id
+                    address {
+                        street
+                        city
+                    }
+                }
+                address {
+                    street
+                    city
+                }
+                color{
+                    background
+                    text
+                }
+            }
+            product{
+                id
+                title
+                category{
+                    id
+                }
+                thumbnail{
+                    url
+                    thumbnail
+                }
+                attrs{
+                    id
+                    price(currency:CNY){
+                        amount
+                        amountISO
+                        currency
+                        formatted
+                    }
+                    oldPrice(currency:CNY){
+                        amount
+                        amountISO
+                        currency
+                        formatted
+                    }
+                    quantity
+                    variation{
+                        name
+                        value
+                    }
+                    asset{
+                        url
+                    }
+                    sku
+                }
+                seller{
+                    id
+                    name
+                    organization {
+                        id
+                        address {
+                            street
+                            city
+                        }
+                    }
+                    address {
+                        street
+                        city
+                    }
+                    color{
+                        background
+                        text
+                    }
+                }
+                description
+                shippingBox{
+                    id
+                    width
+                    height
+                    length
+                    unit
+                    weight
+                    unitWeight
+                }
+                oldPrice(currency:CNY){
+                    amount
+                    amountISO
+                    currency
+                    formatted
+                }
+                price(currency:CNY){
+                    amount
+                    amountISO
+                    currency
+                    formatted
+                }
+                brand {
+                    name
+                }
+                assets{
+                    id
+                    url
+                    thumbnail
+                }
+                customCarrier{
+                    id
+                    name
+                }
+                customCarrierValue(currency:CNY){
+                    amount
+                    amountISO
+                    currency
+                    formatted
+                }
+                isFeatured
+                sold
+                slug
+                rating{
+                    average
+                    total
+                }
+            }
+            productAttribute{
+                id
+                productId
+                price(currency:CNY){
+                    amount
+                    amountISO
+                    formatted
+                }
+                oldPrice(currency:CNY){
+                    amount
+                    amountISO
+                    formatted
+                }
+                quantity
+                variation{
+                    name
+                    value
+                }
+                asset{
+                    id
+                    thumbnail
+                    url
+                }
+                sku
+            }
+            total(currency:CNY){
+                amount
+                amountISO
+                formatted
+            }
+            deliveryAddress {
+                id
+                label
+                street
+                city
+                region {
+                    id
+                    name
+                }
+                country {
+                    id
+                    name
+                }
+                zipCode
+                isDeliveryAvailable
+                addressId
+                description
+                shippingAddress
+            }
+            deliveryIncluded
+            selected
+        }
+        price(currency:CNY){
+            amount
+            amountISO
+            formatted
+        }
+        deliveryPrice(currency:CNY){
+            amount
+            amountISO
+            formatted
+        }
+        total(currency:CNY){
+            amount
+            amountISO
+            formatted
+        }
+    } 
+`;
+
+export const PURCHASE_ORDER_DETAIL = gql`
+    fragment PurchaseOrderDetail on PurchaseOrder{
+        id
+        isPaid
+        status
+        items{
+            id
+            title
+            product{
+                ...ProductInfo
+            }
+            productAttribute{
+                id
+                productId
+                price(currency: CNY){
+                    amount
+                    amountISO
+                    currency
+                    formatted
+                }
+                oldPrice(currency: CNY){
+                    amount
+                    amountISO
+                    currency
+                    formatted
+                }
+                quantity
+                variation{
+                    name
+                    value
+                }
+                asset{
+                    id
+                    thumbnail
+                    url
+                }
+                sku
+            }
+            quantity
+            price(currency: CNY){
+                amount
+                amountISO
+                currency
+                formatted
+            }
+            deliveryPrice(currency: CNY){
+                amount
+                amountISO
+                currency
+                formatted
+            }
+            subtotal(currency: CNY){
+                amount
+                amountISO
+                currency
+                formatted
+            }
+            total(currency: CNY){
+                amount
+                amountISO
+                currency
+                formatted
+            }
+            seller{
+                ...UserDetail
+            }
+            status
+            note
+        }
+        price(currency: CNY){
+            amount
+            amountISO
+            currency
+            formatted
+        }
+        deliveryPrice(currency: CNY){
+            amount
+            amountISO
+            currency
+            formatted
+        }
+        total(currency: CNY){
+            amount
+            amountISO
+            currency
+            formatted
+        }
+        tax(currency: CNY){
+            amount
+            amountISO
+            currency
+            formatted
+        }
+        payments{
+            id
+            amount(currency: CNY){
+                amount
+                amountISO
+                currency
+                formatted
+            }
+            createdAt
+            processedAt
+            status
+            tags
+        }
+        deliveryOrders{
+            id
+            trackingNumber
+            status
+            estimatedDeliveryDate
+            deliveryPrice(currency: CNY){
+                amount
+                amountISO
+                currency
+                formatted
+            }
+            deliveryAddress{
+                id
+                label
+                street
+                city
+                region{
+                    id
+                    name
+                }
+                country{
+                    id
+                    name
+                }
+                zipCode
+                isDeliveryAvailable
+                addressId
+                description
+                shippingAddress
+            }
+            proofPhoto{
+                id
+                thumbnail
+                url
+            }
+            carrier{
+                id
+                name
+            }
+        }
+        cancelationReason
+        error
+        publishableKey
+        paymentClientSecret
+        buyer{
+            ...UserDetail
+        }
+        createdAt
+        paymentInfo
+    }
+    ${PRODUCT}
+    ${USER}
+`;
+
+
+export const GET_CART_PRODUCTS = gql`
+    query {
+        cart{
+            ...CartDetail
+        }
+    }
+    ${CART_DETAIL}
+`;
